@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Celebrations | Vibrant Fine Dining</title>
+    
+    <!-- Modern & Luxurious Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Outfit:wght@300;400;500;600;700;800&family=Alex+Brush&display=swap" rel="stylesheet">
+    
+    <!-- Icons (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- GSAP & Lenis for Smooth Scroll -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <style>
+        :root {
+            /* Jewel Box Color Palette */
+            --amethyst: #4A154B; 
+            --amethyst-light: #7B2C7E;
+            --rose-gold: #FF0055; 
+            --champagne: #D4AF37; 
+            --emerald: #00C853;
+            --sapphire: #01579B;
+            --ruby: #D32F2F;
+            
+            --bg-cream: #FFFDF9;
+            --bg-dark: #121212;
+            --text-main: #1A1A1A;
+            --text-muted: #666666;
+            --white: #FFFFFF;
+            
+            --glass-light: rgba(255, 255, 255, 0.85);
+            --glass-dark: rgba(74, 21, 75, 0.85); /* Amethyst glass */
+            
+            --radius-sm: 12px;
+            --radius-md: 20px;
+            --radius-xl: 40px;
+            
+            --shadow-float: 0 20px 40px rgba(74, 21, 75, 0.15);
+            --shadow-glow: 0 0 30px rgba(212, 175, 55, 0.4);
+            
+            --font-display: 'Playfair Display', serif;
+            --font-ui: 'Outfit', sans-serif;
+            --font-script: 'Alex Brush', cursive;
+            
+            --transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; }
+        
+        body {
+            font-family: var(--font-ui); background-color: var(--bg-cream);
+            color: var(--text-main); overflow-x: hidden;
+        }
+
+        /* --- Custom Cursor --- */
+        #cursor-dot {
+            width: 5px; height: 5px; background: var(--rose-gold);
+            position: fixed; pointer-events: none; z-index: 10000;
+            border-radius: 50%; transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+        #cursor-ring {
+            width: 30px; height: 30px; border: 2px solid var(--champagne);
+            position: fixed; pointer-events: none; z-index: 9999;
+            border-radius: 50%; transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background 0.3s, border-color 0.3s;
+        }
+        .cursor-hover #cursor-dot { background: transparent; }
+        .cursor-hover #cursor-ring {
+            width: 50px; height: 50px; background: rgba(212, 175, 55, 0.1);
+            backdrop-filter: blur(2px); border-color: var(--rose-gold);
+        }
+        .magnetic { display: inline-block; }
+
+        /* --- Global Utilities --- */
+        .container { max-width: 1500px; margin: 0 auto; padding: 0 5%; }
+        .section { padding: 120px 0; position: relative; }
+        .section-title { font-family: var(--font-display); font-size: 3.5rem; color: var(--amethyst); margin-bottom: 20px; line-height: 1.1; }
+        .section-subtitle { font-family: var(--font-ui); font-size: 1.1rem; color: var(--text-muted); max-width: 600px; line-height: 1.6; }
+        
+        /* Updated Book Table Button (Screenshot match) */
+        .btn-gold {
+            background: #EFC635; /* Soft yellow from screenshot */
+            color: #3F194E; /* Dark purple from screenshot */
+            padding: 14px 28px; border-radius: 50px;
+            font-weight: 800; font-size: 0.95rem; text-decoration: none; border: none;
+            box-shadow: 0 4px 15px rgba(239, 198, 53, 0.3); transition: var(--transition);
+            display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+            letter-spacing: 0.05em; text-transform: uppercase;
+        }
+        .btn-gold:hover { transform: translateY(-3px); background: #FCD647; box-shadow: 0 8px 25px rgba(239, 198, 53, 0.4); }
+
+        /* --- Stylish Header --- */
+        .header {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+            padding: 25px 0; transition: var(--transition);
+        }
+        .header.scrolled {
+            background: var(--glass-light); backdrop-filter: blur(20px);
+            padding: 15px 0; border-bottom: 1px solid rgba(0,0,0,0.05);
+            box-shadow: var(--shadow-float);
+        }
+        .header-inner { display: flex; justify-content: space-between; align-items: center; }
+        
+        .logo { font-family: var(--font-display); font-size: 2.2rem; font-weight: 900; color: var(--amethyst); text-decoration: none; display: flex; align-items: center; gap: 12px; }
+        .logo svg { color: var(--rose-gold); width: 32px; height: 32px; }
+        
+        .nav-links { display: flex; gap: 40px; list-style: none; }
+        .nav-link {
+            text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 0.9rem;
+            text-transform: uppercase; letter-spacing: 0.1em; position: relative; padding: 5px 0;
+            display: inline-block; transition: color 0.3s;
+        }
+        .nav-link::after { content: ''; position: absolute; left: 0; bottom: 0; height: 2px; width: 0; background-color: var(--rose-gold); transition: width 0.4s ease; }
+        .nav-link:hover { color: var(--rose-gold); }
+        .nav-link:hover::after { width: 100%; }
+        
+        .nav-actions { display: flex; align-items: center; gap: 20px; }
+        .search-trigger { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.05); color: var(--amethyst); transition: var(--transition); }
+        .search-trigger:hover { background: var(--rose-gold); color: white; transform: rotate(15deg); }
+
+        /* --- Hero Section --- */
+        .hero { height: 100vh; display: flex; align-items: center; position: relative; overflow: hidden; background: var(--bg-dark); }
+        .hero-bg {
+            position: absolute; inset: -5%; width: 110%; height: 110%; z-index: 0;
+            background: url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&q=80&w=1920') center/cover;
+            opacity: 0.7; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+        }
+        .hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(74,21,75,0.7) 0%, rgba(255,0,85,0.2) 100%); z-index: 1; backdrop-filter: blur(2px); }
+        
+        .hero-content { position: relative; z-index: 2; width: 100%; color: white; display: flex; justify-content: space-between; align-items: center; }
+        .hero-left { max-width: 800px; }
+        
+        .hero-script { font-family: var(--font-script); font-size: 4rem; color: var(--champagne); line-height: 0.8; transform: rotate(-5deg); display: inline-block; margin-bottom: 10px; text-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .hero-title { font-family: var(--font-display); font-size: clamp(5rem, 10vw, 8rem); font-weight: 900; line-height: 1; margin-bottom: 30px; text-shadow: 0 10px 40px rgba(0,0,0,0.6); }
+        .hero-title .highlight { -webkit-text-stroke: 2px var(--champagne); color: transparent; display: inline-block; }
+        
+        /* Floating Badge */
+        .award-badge { position: absolute; right: 5%; top: 30%; background: var(--glass-light); padding: 25px; border-radius: 50%; width: 150px; height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: var(--amethyst); box-shadow: var(--shadow-glow); animation: float 6s ease-in-out infinite; backdrop-filter: blur(10px); }
+        .award-badge svg { color: var(--rose-gold); margin-bottom: 5px; }
+        @keyframes float { 0% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-20px) rotate(5deg); } 100% { transform: translateY(0px) rotate(0deg); } }
+
+        /* --- Quick Menu Slider (EatSure Style Icons) --- */
+        .quick-nav { padding: 40px 0; background: var(--white); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .scroller-wrap { width: 100%; overflow: hidden; }
+        .scroller { display: flex; gap: 40px; overflow-x: auto; padding: 20px 5%; scroll-snap-type: x mandatory; scrollbar-width: none; }
+        .scroller::-webkit-scrollbar { display: none; }
+        .quick-item { scroll-snap-align: start; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 15px; cursor: pointer; text-decoration: none; color: var(--text-main); }
+        .quick-icon {
+            width: 100px; height: 100px; border-radius: 50%; background: var(--bg-cream);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.06); transition: var(--transition);
+            border: 3px solid transparent; overflow: hidden; padding: 15px;
+        }
+        .quick-item:hover .quick-icon { transform: translateY(-10px) scale(1.05); border-color: var(--champagne); box-shadow: 0 15px 30px rgba(212, 175, 55, 0.2); }
+        .quick-icon img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
+        .quick-label { font-size: 1rem; font-weight: 700; transform: translateY(0); transition: var(--transition); }
+        .quick-item:hover .quick-label { color: var(--amethyst); transform: translateY(-5px); }
+
+        /* --- Chef's Specials (The Purple Cut-out Shape Section) --- */
+        .specials-section { background: var(--amethyst); padding: 120px 0; color: white; position: relative; overflow: hidden; }
+        .specials-section::before { content: ''; position: absolute; right: -10%; top: -10%; width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(circle, var(--amethyst-light) 0%, transparent 70%); opacity: 0.6; }
+        
+        .special-card {
+            width: 360px; height: 420px; position: relative; cursor: pointer; transition: var(--transition);
+            /* The specific EatSure cut-out bottom-right corner */
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 60px), calc(100% - 60px) 100%, 0 100%);
+            border-radius: var(--radius-md) var(--radius-md) 0 var(--radius-md);
+            background: var(--bg-dark); flex-shrink: 0; scroll-snap-align: start; margin-right: 30px;
+        }
+        /* The colored side-band */
+        .special-card::before { content: ''; position: absolute; left: 0; top: 0; width: 8px; height: 100%; z-index: 10; }
+        .card-ruby::before { background: var(--rose-gold); }
+        .card-emerald::before { background: var(--emerald); }
+        .card-gold::before { background: var(--champagne); }
+        .card-sapphire::before { background: var(--sapphire); }
+
+        .special-card:hover { transform: translateY(-15px); }
+        .special-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; transition: transform 0.8s, opacity 0.5s; }
+        .special-card:hover .special-img { transform: scale(1.12); opacity: 1; filter: contrast(1.1); }
+        .special-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 60%); z-index: 5; padding: 40px 30px; display: flex; flex-direction: column; justify-content: flex-end; }
+        
+        .special-price { position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); color: var(--champagne); padding: 8px 16px; border-radius: 30px; font-weight: 800; font-size: 1.2rem; z-index: 10; border: 1px solid rgba(212,175,55,0.3); }
+        .special-title { font-family: var(--font-display); font-size: 2.2rem; font-weight: 800; color: white; margin-bottom: 5px; }
+        .special-desc { font-size: 0.95rem; color: rgba(255,255,255,0.7); }
+
+        /* --- The Gourmet Portfolio (Pop's Kitchen Style Main Grid) --- */
+        .portfolio-section { background: var(--bg-cream); text-align: center; }
+        .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; margin-top: 60px; }
+        
+        .grid-card {
+            position: relative; height: 500px; border-radius: var(--radius-xl); overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1); cursor: pointer;
+        }
+        .grid-card::after { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.3); transition: background 0.5s; z-index: 1; }
+        .grid-card:hover::after { background: rgba(74,21,75,0.6); } /* Hover turns it amethyst */
+        
+        .grid-img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+        .grid-card:hover .grid-img { transform: scale(1.15); }
+        
+        .grid-content { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; }
+        .grid-icon { width: 60px; height: 60px; background: var(--champagne); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; margin-bottom: 20px; opacity: 0; transform: translateY(20px); transition: all 0.5s 0.1s; }
+        .grid-title { font-family: var(--font-display); font-size: 3.5rem; font-weight: 800; color: white; text-shadow: 0 10px 30px rgba(0,0,0,0.8); transition: transform 0.5s; }
+        .grid-subtitle { color: var(--champagne); font-weight: 600; font-size: 1.1rem; letter-spacing: 0.2em; text-transform: uppercase; margin-top: 10px; opacity: 0; transform: translateY(-20px); transition: all 0.5s; }
+        
+        .grid-card:hover .grid-icon { opacity: 1; transform: translateY(0); }
+        .grid-card:hover .grid-title { transform: scale(1.05); }
+        .grid-card:hover .grid-subtitle { opacity: 1; transform: translateY(0); }
+
+        /* --- Interactive Gallery --- */
+        .gallery-section { padding-bottom: 0; }
+        .gallery-grid { display: flex; gap: 20px; height: 80vh; padding: 0 5%; margin-top: 60px; }
+        .gallery-col { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+        .g-col-1 { transform: translateY(50px); }
+        .g-col-2 { transform: translateY(-30px); }
+        .g-col-3 { transform: translateY(80px); }
+        .g-col-4 { transform: translateY(-10px); }
+        
+        .gallery-item {
+            position: relative; border-radius: var(--radius-md); overflow: hidden;
+            flex-grow: 1; cursor: pointer;
+        }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s; }
+        .gallery-item:hover img { transform: scale(1.1); filter: brightness(1.2); }
+
+        /* --- VIP Contact & Reservations Footer --- */
+        .footer { background: var(--amethyst); color: white; position: relative; overflow: hidden; padding: 120px 0 40px; margin-top: 120px;}
+        .footer::before { content: ''; position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&q=80&w=1920') center/cover; opacity: 0.05; }
+        
+        .footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; position: relative; z-index: 2; align-items: center; }
+        
+        .contact-card { background: var(--glass-light); padding: 50px; border-radius: var(--radius-xl); box-shadow: var(--shadow-float); color: var(--text-main); }
+        .contact-card h3 { font-family: var(--font-display); font-size: 2.5rem; color: var(--amethyst); margin-bottom: 30px; }
+        
+        .form-input { width: 100%; padding: 18px 25px; border-radius: 50px; border: 2px solid rgba(0,0,0,0.05); background: white; margin-bottom: 20px; font-family: var(--font-ui); font-size: 1rem; outline: none; transition: var(--transition); }
+        .form-input:focus { border-color: var(--champagne); box-shadow: 0 0 0 5px rgba(212, 175, 55, 0.1); }
+        
+        .social-capsule { display: inline-flex; align-items: center; gap: 15px; padding: 15px 30px; background: rgba(255,255,255,0.1); border-radius: 50px; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(10px); margin-bottom: 30px; transition: var(--transition); cursor: pointer; }
+        .social-capsule:hover { background: var(--champagne); color: var(--amethyst); border-color: var(--champagne); transform: translateY(-5px); }
+        
+        .info-pill { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; font-size: 1.1rem; }
+        .info-icon { width: 45px; height: 45px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--champagne); }
+
+        /* --- Location Dropdown --- */
+        #location-modal {
+            position: absolute; top: 120%; left: 0; background: white; border-radius: var(--radius-md);
+            box-shadow: var(--shadow-float); padding: 15px; width: 280px; opacity: 0; pointer-events: none;
+            transform: translateY(10px); transition: var(--transition); border: 1px solid rgba(0,0,0,0.05); z-index: 2000;
+        }
+        #location-modal.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
+        .loc-option { padding: 10px 15px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 0.9rem; font-weight: 600; color: var(--text-muted); }
+        .loc-option:hover { background: rgba(74, 21, 75, 0.05); color: var(--amethyst); }
+
+        /* --- Quick Nav Filter Active State --- */
+        .quick-item { transition: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); cursor: pointer; }
+        .quick-item.active { transform: scale(1.1); }
+        .quick-item.active .quick-icon { border-color: var(--champagne); box-shadow: 0 15px 30px rgba(212, 175, 55, 0.3); }
+        .quick-item.active img { filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8)); }
+        .quick-item.active .quick-label { color: var(--champagne); font-weight: 800; }
+
+        /* Responsive Details */
+        @media (max-width: 1024px) {
+            .grid-container { grid-template-columns: 1fr; }
+            .hero-title { font-size: 5rem; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .gallery-grid { height: 60vh; }
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .scroller { padding: 20px 5%; }
+            .special-card { width: 300px; height: 380px; }
+            .grid-title { font-size: 2.5rem; }
+            .gallery-col.g-col-3, .gallery-col.g-col-4 { display: none; } /* Simplify gallery on mobile */
+        }
+    </style>
+</head>
+<body>
+
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+
+    <!-- Stylish Header -->
+    <header class="header">
+        <div class="container header-inner">
+            <div style="display: flex; align-items: center; gap: 25px;">
+                <a href="#" class="logo magnetic">
+                    <i data-lucide="utensils-crossed"></i> Celebrations
+                </a>
+                
+                <!-- Location Select -->
+                <div class="magnetic" style="position: relative; display: flex; flex-direction: column; cursor: pointer; border-left: 2px solid rgba(0,0,0,0.1); padding-left: 25px;" onclick="document.getElementById('location-modal').classList.toggle('active');">
+                    <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Location <i data-lucide="chevron-down" size="12"></i></span>
+                    <span style="font-size: 0.95rem; font-weight: 700; color: var(--amethyst);" id="active-location">Kurmannapalem</span>
+                    
+                    <!-- Dropdown Modal -->
+                    <div id="location-modal" style="width: 280px; padding: 20px;">
+                        <button onclick="setTimeout(()=>{document.getElementById('active-location').innerText='Auto-Detecting...'; setTimeout(()=>document.getElementById('active-location').innerText='Current Location',1500);},10)" style="width:100%; border:none; background:rgba(0,200,83,0.1); color:var(--emerald); padding:10px; border-radius:8px; display:flex; align-items:center; justify-content:center; gap:8px; cursor:pointer; font-weight:700; font-family:var(--font-ui); margin-bottom:15px; transition:0.3s;" onmouseenter="this.style.background='rgba(0,200,83,0.2)'" onmouseleave="this.style.background='rgba(0,200,83,0.1)'">
+                            <i data-lucide="crosshair" size="16"></i> Use Current Location
+                        </button>
+                        <hr style="border:none; border-top:1px solid rgba(0,0,0,0.05); margin-bottom:15px;">
+                        <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px; font-weight:700; text-transform:uppercase;">Manual Select</div>
+                        <div class="loc-option" onclick="setTimeout(()=>document.getElementById('active-location').innerText='Kurmannapalem',10)">Kurmannapalem</div>
+                        <div class="loc-option" onclick="setTimeout(()=>document.getElementById('active-location').innerText='Duvvada',10)">Duvvada</div>
+                        <div class="loc-option" onclick="setTimeout(()=>document.getElementById('active-location').innerText='Gajuwaka',10)">Gajuwaka</div>
+                    </div>
+                </div>
+            </div>
+            
+            <ul class="nav-links">
+                <li><a href="#menu" class="nav-link magnetic">Our Menu</a></li>
+                <li><a href="#specials" class="nav-link magnetic">Chef's Specials</a></li>
+                <li><a href="#gallery" class="nav-link magnetic">Gallery</a></li>
+                <li><a href="#contact" class="nav-link magnetic">Contact</a></li>
+            </ul>
+            
+            <div class="nav-actions">
+                <div class="search-trigger magnetic" style="background: rgba(0,0,0,0.08);"><i data-lucide="search" size="20"></i></div>
+                <a href="booking.html" class="btn-gold magnetic">Book Table <i data-lucide="arrow-right" size="18"></i></a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Vibrant Hero -->
+    <section class="hero">
+        <div class="hero-bg gs-parallax"></div>
+        <div class="hero-overlay"></div>
+        
+        <div class="container hero-content">
+            <div class="hero-left gs-reveal-up">
+                <span class="hero-script">Fine Dining</span>
+                <h1 class="hero-title">Experience <br><span class="highlight">the real</span> taste.</h1>
+                <p class="section-subtitle" style="color: rgba(255,255,255,0.8); font-size: 1.25rem;">Celebrations merges Michelin-star inspiration with a vibrant, unforgettable social atmosphere in the heart of the city.</p>
+                <div style="margin-top: 50px; display: flex; gap: 20px; align-items: center;">
+                    <button onclick="document.getElementById('menu').scrollIntoView({behavior: 'smooth'})" class="magnetic" style="background: #EFC635; color: #3F194E; padding: 14px 28px; border-radius: 50px; font-weight: 800; font-size: 0.9rem; outline: 1px solid white; outline-offset: 2px; border: none; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; transition: transform 0.3s;" onmouseenter="this.style.transform='translateY(-3px)'" onmouseleave="this.style.transform='translateY(0)'">Explore Menu</button>
+                    
+                    <button onclick="alert('Now playing Celebrations restaurant overview video.')" class="magnetic" style="background: transparent; color: white; padding: 14px 28px; border-radius: 50px; font-weight: 800; font-size: 0.9rem; border: 1px solid white; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; letter-spacing: 0.05em; text-transform: uppercase; transition: transform 0.3s;" onmouseenter="this.style.transform='translateY(-3px)'" onmouseleave="this.style.transform='translateY(0)'">Watch Video <i data-lucide="play-circle" size="18"></i></button>
+
+                    <div style="width: 25px; height: 25px; border-radius: 50%; border: 1px solid var(--champagne); display: flex; align-items: center; justify-content: center; margin-left: 5px;">
+                        <div style="width: 5px; height: 5px; border-radius: 50%; background: var(--rose-gold);"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="award-badge magnetic gs-reveal-up" style="transition-delay: 0.3s;">
+                <i data-lucide="star" size="32"></i>
+                <span style="font-weight: 800; font-size: 1.2rem;">2024</span>
+                <span style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase;">Top Fine Dining</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Navigation Icons (EatSure Concept applied to Dining) -->
+    <section class="quick-nav">
+        <div class="scroller-wrap">
+            <div class="scroller">
+                <!-- Icon 1 -->
+                <a onclick="filterMenu('Prime Cuts', this)" class="quick-item magnetic">
+                    <div class="quick-icon"><img src="https://cdn-icons-png.flaticon.com/512/3014/3014498.png" alt="Steaks"></div>
+                    <span class="quick-label">Prime Cuts</span>
+                </a>
+                <!-- Icon 2 -->
+                <a onclick="filterMenu('Fresh Catch', this)" class="quick-item magnetic">
+                    <div class="quick-icon"><img src="https://cdn-icons-png.flaticon.com/512/3014/3014458.png" alt="Seafood"></div>
+                    <span class="quick-label">Fresh Catch</span>
+                </a>
+                <!-- Icon 3 -->
+                <a onclick="filterMenu('Mixology', this)" class="quick-item magnetic active">
+                    <div class="quick-icon"><img src="https://cdn-icons-png.flaticon.com/512/755/755114.png" alt="Cocktails"></div>
+                    <span class="quick-label">Mixology</span>
+                </a>
+                <!-- Icon 4 -->
+                <a onclick="filterMenu('Plant Based', this)" class="quick-item magnetic">
+                    <div class="quick-icon"><img src="https://cdn-icons-png.flaticon.com/512/2819/2819145.png" alt="Vegetarian"></div>
+                    <span class="quick-label">Plant Based</span>
+                </a>
+                <!-- Icon 5 -->
+                <a onclick="filterMenu('Confections', this)" class="quick-item magnetic">
+                    <div class="quick-icon"><img src="https://cdn-icons-png.flaticon.com/512/2660/2660057.png" alt="Desserts"></div>
+                    <span class="quick-label">Confections</span>
+                </a>
+                 <!-- Icon 6 -->
+                 <a onclick="filterMenu('The Cellar', this)" class="quick-item magnetic">
+                    <div class="quick-icon"><img src="https://cdn-icons-png.flaticon.com/512/3212/3212133.png" alt="Wine"></div>
+                    <span class="quick-label">The Cellar</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chef's Specials (The Purple Cut-out Section from EatSure) -->
+    <section id="specials" class="specials-section">
+        <div class="container gs-trigger-specials">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 50px;">
+                <div>
+                    <span class="hero-script" style="font-size: 3rem;">Curated</span>
+                    <h2 class="section-title" style="color: white; margin-bottom: 0;">Chef's Signatures</h2>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <button class="search-trigger" style="background: rgba(255,255,255,0.1); color: white;"><i data-lucide="arrow-left"></i></button>
+                    <button class="search-trigger" style="background: var(--champagne); color: var(--amethyst);"><i data-lucide="arrow-right"></i></button>
+                </div>
+            </div>
+            
+            <div class="scroller-wrap">
+                <div class="scroller gs-stagger-specials" style="padding: 20px 0; overflow-x: scroll; cursor: grab;">
+                    
+                    <div class="special-card card-emerald">
+                        <img class="special-img" src="https://images.unsplash.com/photo-1633945274405-b6c8069047b0?auto=format&fit=crop&q=80&w=800" alt="Biryani">
+                        <div class="special-overlay">
+                            <span class="special-price">&#8377;850</span>
+                            <h3 class="special-title">Royal Awadhi Biryani</h3>
+                            <p class="special-desc">Slow-cooked fragrant basmati, tender mutton, saffron, and aromatic spices.</p>
+                        </div>
+                    </div>
+
+                    <div class="special-card card-ruby">
+                        <img class="special-img" src="https://images.unsplash.com/photo-1603894584373-5ac82b6ae398?auto=format&fit=crop&q=80&w=800" alt="Butter Chicken">
+                        <div class="special-overlay">
+                            <span class="special-price">&#8377;650</span>
+                            <h3 class="special-title">Smoked Butter Chicken</h3>
+                            <p class="special-desc">Classic Murgh Makhani finished with a touch of charcoal smoke and pure cream.</p>
+                        </div>
+                    </div>
+
+                    <div class="special-card card-gold">
+                        <img class="special-img" src="https://images.unsplash.com/photo-1599487405445-63220551bc4b?auto=format&fit=crop&q=80&w=800" alt="Paneer Tikka">
+                        <div class="special-overlay">
+                            <span class="special-price">&#8377;450</span>
+                            <h3 class="special-title">Tandoori Paneer</h3>
+                            <p class="special-desc">Char-grilled cottage cheese marinated in hung curd and fiery Kashmiri chili.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="special-card card-sapphire">
+                        <img class="special-img" src="https://images.unsplash.com/photo-1589301760014-d929f39ce9b1?auto=format&fit=crop&q=80&w=800" alt="Lassi">
+                        <div class="special-overlay">
+                            <span class="special-price">&#8377;250</span>
+                            <h3 class="special-title">Saffron Pista Lassi</h3>
+                            <p class="special-desc">Thick churned yogurt, sweetened with rose water, topped with crunchy pistachios.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Gourmet Portfolio (Pop's Kitchen Master Grid Style) -->
+    <section id="menu" class="section portfolio-section">
+        <div class="container">
+            <span class="hero-script" style="color: var(--rose-gold); font-size: 3rem;">A Journey of Taste</span>
+            <h2 class="section-title">The Gourmet Portfolio</h2>
+            <p class="section-subtitle" style="margin: 0 auto;">Explore heavily curated collections from our award-winning kitchen, clubbed with bespoke artisanal creations.</p>
+            
+            <div class="grid-container">
+                <!-- Indian Dishes -->
+                <div class="grid-card gs-grid-item" onclick="alert('Viewing Indian Menu: Butter Chicken, Hyderabadi Biryani, Garlic Naan, Paneer Tikka...')">
+                    <img class="grid-img" src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&q=80&w=1000" alt="Famous Indian Dishes">
+                    <div class="grid-content">
+                        <div class="grid-icon"><i data-lucide="utensils-crossed"></i></div>
+                        <h3 class="grid-title">Famous Indian</h3>
+                        <p class="grid-subtitle">Curries & Biryanis</p>
+                    </div>
+                </div>
+                
+                <!-- Chinese Dishes -->
+                <div class="grid-card gs-grid-item" onclick="alert('Viewing Chinese Menu: Hakka Noodles, Manchurian, Spring Rolls, Chilli Chicken...')">
+                    <img class="grid-img" src="https://images.unsplash.com/photo-1564834724105-918b73d1b9e0?auto=format&fit=crop&q=80&w=1000" alt="Chinese Wok">
+                    <div class="grid-content">
+                        <div class="grid-icon" style="background: var(--ruby);"><i data-lucide="flame"></i></div>
+                        <h3 class="grid-title">Authentic Chinese</h3>
+                        <p class="grid-subtitle" style="color: var(--ruby);">Wok Tossed Classics</p>
+                    </div>
+                </div>
+                
+                <!-- Mixology -->
+                <div class="grid-card gs-grid-item" style="height: 400px;">
+                    <img class="grid-img" src="https://images.unsplash.com/photo-1542466500-dccb2789cbbb?auto=format&fit=crop&q=80&w=1000" alt="Handcrafted Mixology">
+                    <div class="grid-content">
+                        <div class="grid-icon" style="background: var(--rose-gold);"><i data-lucide="glass-water"></i></div>
+                        <h3 class="grid-title">Mixology</h3>
+                        <p class="grid-subtitle" style="color: var(--rose-gold);">Signature Drinks</p>
+                    </div>
+                </div>
+                
+                <!-- Confections -->
+                <div class="grid-card gs-grid-item" style="height: 400px;">
+                    <img class="grid-img" src="https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?auto=format&fit=crop&q=80&w=1000" alt="Confections">
+                    <div class="grid-content">
+                        <div class="grid-icon" style="background: var(--emerald);"><i data-lucide="cake"></i></div>
+                        <h3 class="grid-title">Confections</h3>
+                        <p class="grid-subtitle" style="color: var(--emerald);">A Sweet Symphony</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Parallax Gallery -->
+    <section id="gallery" class="section gallery-section">
+        <div class="container" style="text-align: center;">
+            <span class="hero-script" style="color: var(--amethyst); font-size: 3rem;">Visual Delight</span>
+            <h2 class="section-title">The Gallery</h2>
+        </div>
+        
+        <!-- Parallax enabled columns -->
+        <div class="gallery-grid">
+            <div class="gallery-col g-col-1 gs-para" data-speed="1.2">
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&q=80&w=600" alt="Interior"></div>
+                <div class="gallery-item" style="flex-grow: 1.5;"><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=600" alt="Food"></div>
+            </div>
+            <div class="gallery-col g-col-2 gs-para" data-speed="0.8">
+                <div class="gallery-item" style="flex-grow: 2;"><img src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&q=80&w=600" alt="Cocktail"></div>
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?auto=format&fit=crop&q=80&w=600" alt="Detail"></div>
+            </div>
+            <div class="gallery-col g-col-3 gs-para" data-speed="1.4">
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&q=80&w=600" alt="Chef"></div>
+                <div class="gallery-item" style="flex-grow: 2;"><img src="https://images.unsplash.com/photo-1560684352-8497838a2229?auto=format&fit=crop&q=80&w=600" alt="Dish"></div>
+            </div>
+            <div class="gallery-col g-col-4 gs-para" data-speed="1">
+                <div class="gallery-item" style="flex-grow: 1.5;"><img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&q=80&w=600" alt="Ambiance"></div>
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&q=80&w=600" alt="Wine"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- VIP Contact & Reservations Footer -->
+    <footer id="contact" class="footer">
+        <div class="container footer-grid">
+            <div class="footer-info gs-reveal-up">
+                <span class="hero-script" style="color: var(--champagne); font-size: 4rem; line-height: 0.8;">Join Us</span>
+                <h2 class="section-title" style="color: white; font-size: 4.5rem; margin-bottom: 40px;">Get in Touch.</h2>
+                
+                <div class="info-pill">
+                    <div class="info-icon"><i data-lucide="map-pin"></i></div>
+                    <div>
+                        <p style="font-weight: 700; color: var(--champagne);">Celebrations Location</p>
+                        <p style="color: rgba(255,255,255,0.7); font-size: 0.95rem;">Kurmannapalem, Duvvada</p>
+                    </div>
+                </div>
+                
+                <div class="info-pill">
+                    <div class="info-icon"><i data-lucide="mail"></i></div>
+                    <div>
+                        <p style="font-weight: 700; color: var(--champagne);">Email Us</p>
+                        <p style="color: rgba(255,255,255,0.7); font-size: 0.95rem;">pavankumarmushkarla630@gmail.com</p>
+                    </div>
+                </div>
+                
+                <div class="info-pill" style="margin-bottom: 40px;">
+                    <div class="info-icon"><i data-lucide="phone"></i></div>
+                    <div>
+                        <p style="font-weight: 700; color: var(--champagne);">Mobile VIP Concierge</p>
+                        <p style="color: rgba(255,255,255,0.7); font-size: 0.95rem;">6302262018</p>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 15px;">
+                    <div class="search-trigger magnetic" style="border: 1px solid rgba(255,255,255,0.2); color: white;"><i data-lucide="instagram"></i></div>
+                    <div class="search-trigger magnetic" style="border: 1px solid rgba(255,255,255,0.2); color: white;"><i data-lucide="facebook"></i></div>
+                    <div class="search-trigger magnetic" style="border: 1px solid rgba(255,255,255,0.2); color: white;"><i data-lucide="twitter"></i></div>
+                </div>
+            </div>
+            
+            <div class="contact-card gs-reveal-up" style="transition-delay: 0.2s; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 80px 40px;">
+                <h3 style="margin-bottom:20px; font-size: 3rem;">Ready to Dine?</h3>
+                <p style="color: var(--text-muted); margin-bottom: 40px; font-size: 1.1rem;">Skip the wait by securing your table at Celebrations through our new VIP Booking Portal.</p>
+                <a href="booking.html" class="btn-gold magnetic" style="padding: 20px 50px; font-size: 1.2rem;">Book Your Table <i data-lucide="arrow-right"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Init Lucide Icons
+        lucide.createIcons();
+
+        // Functional Menu Filtering
+        function filterMenu(categoryName, element) {
+            // Remove active style from all nav icons
+            document.querySelectorAll('.quick-item').forEach(el => el.classList.remove('active'));
+            // Apply gold energetic active style to clicked icon
+            element.classList.add('active');
+            
+            // Give user feedback by updating the Menu title contextually
+            let sectionTitle = document.querySelector('#menu .section-title');
+            
+            // Elegant GSAP animation to swap title based on category clicked
+            gsap.to(sectionTitle, { opacity: 0, y: -10, duration: 0.2, onComplete: () => {
+                sectionTitle.innerHTML = categoryName + " Portfolio";
+                gsap.to(sectionTitle, { opacity: 1, y: 0, duration: 0.2, clearProps: "all" });
+            }});
+            
+            // Smoothly scroll down to the portfolio grid
+            document.getElementById('menu').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Custom Cursor Logic
+        const dot = document.getElementById('cursor-dot');
+        const ring = document.getElementById('cursor-ring');
+        let mX = window.innerWidth/2, mY = window.innerHeight/2; 
+        let rX = mX, rY = mY;
+
+        window.addEventListener('mousemove', e => {
+            mX = e.clientX; mY = e.clientY;
+            dot.style.left = mX + 'px'; dot.style.top = mY + 'px';
+        });
+
+        function updateRing() {
+            rX += (mX - rX) * 0.15;
+            rY += (mY - rY) * 0.15;
+            ring.style.left = rX + 'px'; ring.style.top = rY + 'px';
+            requestAnimationFrame(updateRing);
+        }
+        updateRing();
+
+        document.querySelectorAll('a, button, input, select, .magnetic, .quick-item, .special-card, .grid-card, .gallery-item').forEach(el => {
+            el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+        });
+
+        // Magnetic Physics
+        document.querySelectorAll('.magnetic').forEach(el => {
+            el.addEventListener('mousemove', function(e) {
+                const pos = this.getBoundingClientRect();
+                const mx = e.clientX - pos.left - pos.width/2;
+                const my = e.clientY - pos.top - pos.height/2;
+                gsap.to(this, { x: mx * 0.4, y: my * 0.4, duration: 0.6, ease: "power3.out" });
+            });
+            el.addEventListener('mouseleave', function() {
+                gsap.to(this, { x: 0, y: 0, duration: 0.8, ease: "elastic.out(1, 0.3)" });
+            });
+        });
+
+        // GSAP Initialization
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Header Scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 50) header.classList.add('scrolled');
+            else header.classList.remove('scrolled');
+        });
+
+        // Hero Load Animations
+        const tlLoad = gsap.timeline();
+        tlLoad.from('.header', {y: -100, opacity: 0, duration: 1, ease: 'power3.out'})
+              .from('.gs-reveal-up', {y: 50, opacity: 0, duration: 1, stagger: 0.2, ease: 'power3.out'}, "-=0.5");
+
+        // Faux Parallax on Hero Bg
+        gsap.to('.gs-parallax', {
+            yPercent: 30,
+            ease: "none",
+            scrollTrigger: {
+                trigger: ".hero",
+                start: "top top", 
+                end: "bottom top",
+                scrub: true
+            } 
+        });
+
+        // Specials Stagger (Horizontal Scroll trigger)
+        gsap.from('.gs-stagger-specials .special-card', {
+            scrollTrigger: {
+                trigger: '.gs-trigger-specials',
+                start: 'top 80%',
+            },
+            x: 100, opacity: 0, duration: 0.8, stagger: 0.15, ease: 'power3.out'
+        });
+
+        // Portfolio Grid Stagger
+        gsap.from('.gs-grid-item', {
+            scrollTrigger: {
+                trigger: '.portfolio-section',
+                start: 'top 70%',
+            },
+            y: 50, opacity: 0, scale: 0.95, duration: 0.8, stagger: 0.2, ease: 'back.out(1.2)'
+        });
+
+        // Gallery Parallax Columns
+        gsap.utils.toArray('.gs-para').forEach(col => {
+            const speed = col.getAttribute('data-speed');
+            gsap.to(col, {
+                y: -100 * speed,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: ".gallery-section",
+                    start: "top bottom",
+                    end: "bottom top",
+                    scrub: 1
+                }
+            });
+        });
+
+        // Footer Reveal
+        gsap.from('.footer .gs-reveal-up', {
+            scrollTrigger: {
+                trigger: '.footer',
+                start: 'top 80%'
+            },
+            y: 50, opacity: 0, duration: 1, stagger: 0.2, ease: 'power3.out'
+        });
+
+    </script>
+</body>
+</html>

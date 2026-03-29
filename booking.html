@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP Booking | Celebrations</title>
+
+    <!-- Modern & Luxurious Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Outfit:wght@300;400;500;600;700;800&family=Alex+Brush&display=swap" rel="stylesheet">
+    
+    <!-- Icons (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <style>
+        :root {
+            /* Jewel Box Color Palette */
+            --amethyst: #3F194E; /* Matched from user screenshot text */
+            --rose-gold: #FF0055; 
+            --champagne: #EFC635; /* Matched from user screenshot bg */
+            --emerald: #00C853;
+            
+            --bg-cream: #FFFDF9;
+            --bg-dark: #121212;
+            --text-main: #1A1A1A;
+            --text-muted: #666666;
+            
+            --font-display: 'Playfair Display', serif;
+            --font-ui: 'Outfit', sans-serif;
+            --font-script: 'Alex Brush', cursive;
+            
+            --transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-ui); background: var(--bg-cream); color: var(--text-main); overflow-x: hidden; }
+
+        /* --- Split Layout UI --- */
+        .split-layout { display: flex; min-height: 100vh; }
+        
+        .split-image {
+            flex: 1; position: relative; overflow: hidden;
+            display: flex; flex-direction: column; justify-content: space-between; padding: 40px; color: white;
+        }
+        .split-image::before {
+            content: ''; position: absolute; inset: 0;
+            background: url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&q=80&w=1500') center/cover;
+            z-index: -2;
+        }
+        .split-image::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(63,25,78,0.8) 0%, rgba(0,0,0,0.4) 100%);
+            z-index: -1;
+        }
+
+        .split-form-wrap {
+            flex: 1; padding: 60px 8%; display: flex; flex-direction: column; justify-content: center;
+            background: white; position: relative; max-width: 800px;
+        }
+
+        /* Elements */
+        .brand-link { font-family: var(--font-display); font-size: 2rem; font-weight: 800; color: white; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; }
+        .brand-link svg { color: var(--champagne); }
+
+        .back-btn { position: absolute; top: 40px; right: 8%; text-decoration: none; display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--text-muted); transition: 0.3s; }
+        .back-btn:hover { color: var(--amethyst); }
+
+        .form-header { margin-bottom: 40px; }
+        .form-title { font-family: var(--font-display); font-size: 3.5rem; color: var(--amethyst); line-height: 1.1; margin-bottom: 10px; }
+        .form-subtitle { font-size: 1.1rem; color: var(--text-muted); }
+
+        /* Form Logic */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .input-group { display: flex; flex-direction: column; gap: 8px; }
+        .input-label { font-size: 0.85rem; font-weight: 700; color: var(--amethyst); text-transform: uppercase; letter-spacing: 0.05em; }
+        
+        .form-input {
+            width: 100%; padding: 18px 20px; border-radius: 12px; border: 2px solid rgba(0,0,0,0.06);
+            background: rgba(0,0,0,0.02); font-family: var(--font-ui); font-size: 1rem; color: var(--text-main);
+            outline: none; transition: var(--transition);
+        }
+        .form-input:focus { border-color: var(--champagne); background: white; box-shadow: 0 0 0 4px rgba(239, 198, 53, 0.1); }
+        .form-input::placeholder { color: #A0A0A0; }
+
+        .form-input-select {
+            appearance: none; cursor: pointer;
+            background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%233F194E%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat; background-position: right 20px center; background-size: 16px;
+        }
+
+        /* The specific button matching User Screenshot */
+        .btn-gold {
+            background: #EFC635; /* Soft yellow matching reference */
+            color: #3F194E; /* Dark elegant purple */
+            padding: 18px 40px; border-radius: 50px;
+            font-weight: 800; font-size: 1.1rem; border: none;
+            box-shadow: 0 4px 15px rgba(239, 198, 53, 0.3); transition: var(--transition);
+            display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer;
+            letter-spacing: 0.05em; width: 100%; margin-top: 20px;
+        }
+        .btn-gold:hover { transform: translateY(-3px); background: #FCD647; box-shadow: 0 8px 25px rgba(239, 198, 53, 0.4); }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .split-layout { flex-direction: column; }
+            .split-image { min-height: 30vh; }
+            .split-form-wrap { padding: 40px 5%; max-width: 100%; }
+        }
+        @media (max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; gap: 15px; }
+            .form-title { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="split-layout">
+        
+        <!-- Imagery Side -->
+        <div class="split-image gs-fade">
+            <a href="index.html" class="brand-link">
+                <i data-lucide="utensils-crossed"></i> Celebrations
+            </a>
+            <div>
+                <span style="font-family: var(--font-script); font-size: 3rem; color: var(--champagne); display: block; margin-bottom: -10px;">Exclusive</span>
+                <h1 style="font-family: var(--font-display); font-size: 3.5rem; line-height: 1.1;">An evening<br>designed around<br>you.</h1>
+            </div>
+        </div>
+
+        <!-- Form Side -->
+        <div class="split-form-wrap gs-slide-up">
+            <a href="index.html" class="back-btn"><i data-lucide="arrow-left" size="18"></i> Back to Homepage</a>
+            
+            <div class="form-header">
+                <span style="color: var(--champagne); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 5px;">VIP Concierge</span>
+                <h2 class="form-title">Reserve Table</h2>
+                <p class="form-subtitle">Fill in your details, and our concierge will handle the rest.</p>
+            </div>
+
+            <form id="booking-form" onsubmit="
+                event.preventDefault(); 
+                let btn = document.getElementById('book-btn');
+                btn.innerHTML = 'Booking Confirmed! &check;';
+                btn.style.background = 'var(--emerald)';
+                btn.style.color = 'white';
+                setTimeout(() => { 
+                    document.getElementById('booking-form').reset(); 
+                    btn.innerHTML = 'BOOK TABLE <i data-lucide=\'arrow-right\'></i>'; 
+                    btn.style.background = ''; btn.style.color = ''; 
+                    lucide.createIcons();
+                }, 4000);
+            ">
+                
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label class="input-label">Full Name</label>
+                        <input type="text" class="form-input" placeholder="e.g. John Doe" required>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Mobile Number</label>
+                        <input type="tel" class="form-input" placeholder="+1 (555) 000-0000" required>
+                    </div>
+                </div>
+
+                <div class="form-grid" style="grid-template-columns: 1.2fr 1fr;">
+                    <div class="input-group">
+                        <label class="input-label">Date</label>
+                        <input type="date" class="form-input" required style="color: var(--text-muted);">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Time</label>
+                        <input type="time" class="form-input" required style="color: var(--text-muted);">
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label class="input-label">Group Type</label>
+                        <select class="form-input form-input-select" required>
+                            <option value="" disabled selected>Select size...</option>
+                            <option value="solo">Solo Dining (1)</option>
+                            <option value="couple">Couple (2 People)</option>
+                            <option value="family">Family (3-6 People)</option>
+                            <option value="friends">Friends Group (4-8+)</option>
+                            <option value="vip">VIP Buyout (10+)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Event Purpose</label>
+                        <select class="form-input form-input-select" required>
+                            <option value="" disabled selected>Select occasion...</option>
+                            <option value="casual">Casual Experience</option>
+                            <option value="birthday">Birthday Party</option>
+                            <option value="anniversary">Anniversary</option>
+                            <option value="bachelor">Bachelor / Bachelorette</option>
+                            <option value="romantic">Romantic Date</option>
+                            <option value="business">Business Meeting</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group" style="margin-bottom: 20px;">
+                    <label class="input-label">Location Preference</label>
+                    <div style="display: flex; gap: 10px;">
+                        <select class="form-input form-input-select" style="flex: 2;" required>
+                            <option value="" disabled selected>Select branch...</option>
+                            <option value="kurmannapalem">Kurmannapalem, Duvvada</option>
+                            <option value="gajuwaka">Gajuwaka Branch</option>
+                        </select>
+                        <button type="button" onclick="this.innerHTML='<i data-lucide=\'check\'></i> Detected'; this.style.color='var(--emerald)'; this.style.borderColor='var(--emerald)'; lucide.createIcons();" class="form-input" style="flex: 1; padding: 0; display:flex; justify-content:center; align-items:center; cursor:pointer; font-weight:700; gap:8px; color: var(--amethyst);">
+                            <i data-lucide="crosshair" size="18"></i> Auto
+                        </button>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Special Requests & Dietary Requirements</label>
+                    <textarea class="form-input" placeholder="Allergies, seating preferences, specific celebrations..." style="resize:none; height:100px;"></textarea>
+                </div>
+                
+                <button id="book-btn" type="submit" class="btn-gold">
+                    BOOK TABLE <i data-lucide="arrow-right"></i>
+                </button>
+
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Init Icons
+        lucide.createIcons();
+
+        // Reveal Animations
+        gsap.from('.gs-fade', { opacity: 0, duration: 1.5, ease: 'power2.out' });
+        gsap.from('.gs-slide-up', { y: 50, opacity: 0, duration: 1, delay: 0.3, ease: 'power3.out' });
+        gsap.from('.input-group', { y: 20, opacity: 0, duration: 0.6, stagger: 0.1, delay: 0.6, ease: 'power2.out' });
+        gsap.from('.btn-gold', { scale: 0.9, opacity: 0, duration: 0.6, delay: 1.2, ease: 'back.out(1.5)' });
+    </script>
+</body>
+</html>
