@@ -696,7 +696,7 @@
         gsap.from('.gs-stagger-specials .special-card', {
             scrollTrigger: {
                 trigger: '.gs-trigger-specials',
-                start: 'top 80%',
+                start: 'top bottom', // Trigger as soon as it enters viewport to avoid invisible bug
             },
             x: 100, opacity: 0, duration: 0.8, stagger: 0.15, ease: 'power3.out'
         });
@@ -705,7 +705,7 @@
         gsap.from('.gs-grid-item', {
             scrollTrigger: {
                 trigger: '.portfolio-section',
-                start: 'top 70%',
+                start: 'top bottom',
             },
             y: 50, opacity: 0, scale: 0.95, duration: 0.8, stagger: 0.2, ease: 'back.out(1.2)'
         });
@@ -729,7 +729,7 @@
         gsap.from('.footer .gs-reveal-up', {
             scrollTrigger: {
                 trigger: '.footer',
-                start: 'top 80%'
+                start: 'top bottom' // Trigger instantly when footer enters viewport
             },
             y: 50, opacity: 0, duration: 1, stagger: 0.2, ease: 'power3.out'
         });
