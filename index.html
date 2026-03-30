@@ -150,25 +150,11 @@
         .award-badge svg { color: var(--rose-gold); margin-bottom: 5px; }
         @keyframes float { 0% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-20px) rotate(5deg); } 100% { transform: translateY(0px) rotate(0deg); } }
 
-        /* --- Quick Menu Slider (EatSure Style Icons) --- */
-        .quick-nav { padding: 40px 0; background: var(--white); border-bottom: 1px solid rgba(0,0,0,0.05); }
         .scroller-wrap { width: 100%; overflow: hidden; }
         .scroller { display: flex; gap: 40px; overflow-x: auto; padding: 20px 5%; scrollbar-width: none; user-select: none; }
         .scroller.dragging { scroll-behavior: auto; cursor: grabbing !important; }
         .scroller.dragging * { pointer-events: none; }
         .scroller::-webkit-scrollbar { display: none; }
-        .quick-item { scroll-snap-align: start; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 15px; cursor: pointer; text-decoration: none; color: var(--text-main); }
-        .quick-icon {
-            width: 100px; height: 100px; border-radius: 50%; background: var(--bg-cream);
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.06); transition: var(--transition);
-            border: 3px solid transparent; overflow: hidden; padding: 15px;
-        }
-        .quick-item:hover .quick-icon { transform: translateY(-10px) scale(1.05); border-color: var(--champagne); box-shadow: 0 15px 30px rgba(212, 175, 55, 0.2); }
-        .quick-icon svg { width: 45px; height: 45px; color: var(--amethyst); transition: var(--transition); stroke-width: 1.5px; }
-        .quick-item:hover .quick-icon svg { color: var(--champagne); transform: scale(1.1); }
-        .quick-label { font-size: 1rem; font-weight: 700; transform: translateY(0); transition: var(--transition); }
-        .quick-item:hover .quick-label { color: var(--amethyst); transform: translateY(-5px); }
 
         /* --- Chef's Specials (The Purple Cut-out Shape Section) --- */
         .specials-section { background: var(--amethyst); padding: 120px 0; color: white; position: relative; overflow: hidden; }
@@ -265,20 +251,7 @@
         .loc-option { padding: 10px 15px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 0.9rem; font-weight: 600; color: var(--text-muted); }
         .loc-option:hover { background: rgba(74, 21, 75, 0.05); color: var(--amethyst); }
 
-        .quick-item.active .quick-label { color: var(--champagne); font-weight: 800; }
 
-        /* --- Disabled State --- */
-        .quick-item.disabled {
-            opacity: 0.4;
-            pointer-events: none;
-            cursor: not-allowed;
-            filter: grayscale(1);
-        }
-        .quick-item.disabled .quick-icon {
-            box-shadow: none !important;
-            border-color: rgba(0,0,0,0.1) !important;
-        }
-        .quick-item.disabled:hover { transform: none !important; }
 
         /* Responsive Details */
         @media (max-width: 1024px) {
@@ -377,43 +350,7 @@
         </div>
     </section>
 
-    <!-- Quick Navigation Icons (EatSure Concept applied to Dining) -->
-    <section class="quick-nav">
-        <div class="scroller-wrap">
-            <div class="scroller">
-                <!-- Icon 1 -->
-                <a onclick="filterMenu('Prime Cuts', this)" class="quick-item magnetic disabled">
-                    <div class="quick-icon"><i data-lucide="flame"></i></div>
-                    <span class="quick-label">Prime Cuts</span>
-                </a>
-                <!-- Icon 2 -->
-                <a onclick="filterMenu('Fresh Catch', this)" class="quick-item magnetic disabled">
-                    <div class="quick-icon"><i data-lucide="waves"></i></div>
-                    <span class="quick-label">Fresh Catch</span>
-                </a>
-                <!-- Icon 3 -->
-                <a onclick="filterMenu('Mixology', this)" class="quick-item magnetic disabled">
-                    <div class="quick-icon"><i data-lucide="martini"></i></div>
-                    <span class="quick-label">Mixology</span>
-                </a>
-                <!-- Icon 4 -->
-                <a onclick="filterMenu('Plant Based', this)" class="quick-item magnetic disabled">
-                    <div class="quick-icon"><i data-lucide="leaf"></i></div>
-                    <span class="quick-label">Plant Based</span>
-                </a>
-                <!-- Icon 5 -->
-                <a onclick="filterMenu('Confections', this)" class="quick-item magnetic active disabled">
-                    <div class="quick-icon"><i data-lucide="cake"></i></div>
-                    <span class="quick-label">Confections</span>
-                </a>
-                 <!-- Icon 6 -->
-                 <a onclick="filterMenu('The Cellar', this)" class="quick-item magnetic disabled">
-                    <div class="quick-icon"><i data-lucide="wine"></i></div>
-                    <span class="quick-label">The Cellar</span>
-                </a>
-            </div>
-        </div>
-    </section>
+
 
     <!-- Chef's Specials (The Purple Cut-out Section from EatSure) -->
     <section id="specials" class="specials-section">
@@ -602,27 +539,7 @@
         // Init Lucide Icons
         lucide.createIcons();
 
-        // Functional Menu Filtering
-        function filterMenu(categoryName, element) {
-            // Check if item is disabled
-            if (element.classList.contains('disabled')) return;
 
-            // Remove active style from all nav icons
-            // Apply gold energetic active style to clicked icon
-            element.classList.add('active');
-            
-            // Give user feedback by updating the Menu title contextually
-            let sectionTitle = document.querySelector('#menu .section-title');
-            
-            // Elegant GSAP animation to swap title based on category clicked
-            gsap.to(sectionTitle, { opacity: 0, y: -10, duration: 0.2, onComplete: () => {
-                sectionTitle.innerHTML = categoryName + " Portfolio";
-                gsap.to(sectionTitle, { opacity: 1, y: 0, duration: 0.2, clearProps: "all" });
-            }});
-            
-            // Smoothly scroll down to the portfolio grid
-            document.getElementById('menu').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
 
         // Drag-to-Scroll Logic for Scrollers
         document.querySelectorAll('.scroller').forEach(slider => {
@@ -666,7 +583,7 @@
         }
         updateRing();
 
-        document.querySelectorAll('a, button, input, select, .magnetic, .quick-item, .special-card, .grid-card, .gallery-item').forEach(el => {
+        document.querySelectorAll('a, button, input, select, .magnetic, .special-card, .grid-card, .gallery-item').forEach(el => {
             el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
             el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
         });
