@@ -153,7 +153,9 @@
         /* --- Quick Menu Slider (EatSure Style Icons) --- */
         .quick-nav { padding: 40px 0; background: var(--white); border-bottom: 1px solid rgba(0,0,0,0.05); }
         .scroller-wrap { width: 100%; overflow: hidden; }
-        .scroller { display: flex; gap: 40px; overflow-x: auto; padding: 20px 5%; scroll-snap-type: x mandatory; scrollbar-width: none; }
+        .scroller { display: flex; gap: 40px; overflow-x: auto; padding: 20px 5%; scrollbar-width: none; user-select: none; }
+        .scroller.dragging { scroll-behavior: auto; cursor: grabbing !important; }
+        .scroller.dragging * { pointer-events: none; }
         .scroller::-webkit-scrollbar { display: none; }
         .quick-item { scroll-snap-align: start; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 15px; cursor: pointer; text-decoration: none; color: var(--text-main); }
         .quick-icon {
@@ -163,7 +165,8 @@
             border: 3px solid transparent; overflow: hidden; padding: 15px;
         }
         .quick-item:hover .quick-icon { transform: translateY(-10px) scale(1.05); border-color: var(--champagne); box-shadow: 0 15px 30px rgba(212, 175, 55, 0.2); }
-        .quick-icon img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
+        .quick-icon svg { width: 45px; height: 45px; color: var(--amethyst); transition: var(--transition); stroke-width: 1.5px; }
+        .quick-item:hover .quick-icon svg { color: var(--champagne); transform: scale(1.1); }
         .quick-label { font-size: 1rem; font-weight: 700; transform: translateY(0); transition: var(--transition); }
         .quick-item:hover .quick-label { color: var(--amethyst); transform: translateY(-5px); }
 
@@ -176,8 +179,8 @@
             /* The specific EatSure cut-out bottom-right corner */
             clip-path: polygon(0 0, 100% 0, 100% calc(100% - 60px), calc(100% - 60px) 100%, 0 100%);
             border-radius: var(--radius-md) var(--radius-md) 0 var(--radius-md);
-            background: var(--bg-dark); flex-shrink: 0; scroll-snap-align: start; margin-right: 30px;
-            backface-visibility: hidden; transform: translateZ(0); -webkit-font-smoothing: antialiased;
+            background: var(--bg-dark); flex-shrink: 0; margin-right: 30px;
+            backface-visibility: hidden; transform: translate3d(0,0,0); -webkit-font-smoothing: antialiased;
         }
         /* The colored side-band */
         .special-card::before { content: ''; position: absolute; left: 0; top: 0; width: 8px; height: 100%; z-index: 10; }
@@ -187,8 +190,8 @@
         .card-sapphire::before { background: var(--sapphire); }
 
         .special-card:hover { transform: translateY(-15px) translateZ(0); }
-        .special-img { width: 100%; height: 100%; object-fit: cover; opacity: 1; filter: brightness(1); transition: transform 0.8s, filter 0.5s; backface-visibility: hidden; transform: translateZ(0) scale(1.0); }
-        .special-card:hover .special-img { transform: scale(1.12) translateZ(0); filter: brightness(1.1) contrast(1.1); }
+        .special-img { width: 100%; height: 100%; object-fit: cover; opacity: 1; filter: brightness(1); transition: transform 0.8s, filter 0.5s; backface-visibility: hidden; transform: translate3d(0,0,0) scale(1.0); }
+        .special-card:hover .special-img { transform: scale(1.12) translate3d(0,0,0); filter: brightness(1.1) contrast(1.1); }
         .special-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 45%); z-index: 5; padding: 40px 30px; display: flex; flex-direction: column; justify-content: flex-end; }
         
         .special-price { position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); color: var(--champagne); padding: 8px 16px; border-radius: 30px; font-weight: 800; font-size: 1.2rem; z-index: 10; border: 1px solid rgba(212,175,55,0.3); }
@@ -240,7 +243,7 @@
         
         .footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; position: relative; z-index: 2; align-items: center; }
         
-        .contact-card { background: var(--glass-light); padding: 50px; border-radius: var(--radius-xl); box-shadow: var(--shadow-float); color: var(--text-main); }
+        .contact-card { background: var(--glass-light); padding: 80px 40px; border-radius: var(--radius-xl); box-shadow: var(--shadow-float); color: var(--text-main); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
         .contact-card h3 { font-family: var(--font-display); font-size: 2.5rem; color: var(--amethyst); margin-bottom: 30px; }
         
         .form-input { width: 100%; padding: 18px 25px; border-radius: 50px; border: 2px solid rgba(0,0,0,0.05); background: white; margin-bottom: 20px; font-family: var(--font-ui); font-size: 1rem; outline: none; transition: var(--transition); }
@@ -262,12 +265,20 @@
         .loc-option { padding: 10px 15px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 0.9rem; font-weight: 600; color: var(--text-muted); }
         .loc-option:hover { background: rgba(74, 21, 75, 0.05); color: var(--amethyst); }
 
-        /* --- Quick Nav Filter Active State --- */
-        .quick-item { transition: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); cursor: pointer; }
-        .quick-item.active { transform: scale(1.1); }
-        .quick-item.active .quick-icon { border-color: var(--champagne); box-shadow: 0 15px 30px rgba(212, 175, 55, 0.3); }
-        .quick-item.active img { filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8)); }
         .quick-item.active .quick-label { color: var(--champagne); font-weight: 800; }
+
+        /* --- Disabled State --- */
+        .quick-item.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            cursor: not-allowed;
+            filter: grayscale(1);
+        }
+        .quick-item.disabled .quick-icon {
+            box-shadow: none !important;
+            border-color: rgba(0,0,0,0.1) !important;
+        }
+        .quick-item.disabled:hover { transform: none !important; }
 
         /* Responsive Details */
         @media (max-width: 1024px) {
@@ -371,33 +382,33 @@
         <div class="scroller-wrap">
             <div class="scroller">
                 <!-- Icon 1 -->
-                <a onclick="filterMenu('Prime Cuts', this)" class="quick-item magnetic">
-                    <div class="quick-icon"><img src="https://cdn-icons-png.flaticon.com/512/3014/3014498.png" alt="Steaks"></div>
+                <a onclick="filterMenu('Prime Cuts', this)" class="quick-item magnetic disabled">
+                    <div class="quick-icon"><i data-lucide="flame"></i></div>
                     <span class="quick-label">Prime Cuts</span>
                 </a>
                 <!-- Icon 2 -->
-                <a onclick="filterMenu('Fresh Catch', this)" class="quick-item magnetic">
-                    <div class="quick-icon"><img src="https://cdn-icons-png.flaticon.com/512/3014/3014458.png" alt="Seafood"></div>
+                <a onclick="filterMenu('Fresh Catch', this)" class="quick-item magnetic disabled">
+                    <div class="quick-icon"><i data-lucide="waves"></i></div>
                     <span class="quick-label">Fresh Catch</span>
                 </a>
                 <!-- Icon 3 -->
-                <a onclick="filterMenu('Mixology', this)" class="quick-item magnetic active">
-                    <div class="quick-icon"><img src="https://cdn-icons-png.flaticon.com/512/755/755114.png" alt="Cocktails"></div>
+                <a onclick="filterMenu('Mixology', this)" class="quick-item magnetic disabled">
+                    <div class="quick-icon"><i data-lucide="martini"></i></div>
                     <span class="quick-label">Mixology</span>
                 </a>
                 <!-- Icon 4 -->
-                <a onclick="filterMenu('Plant Based', this)" class="quick-item magnetic">
-                    <div class="quick-icon"><img src="https://cdn-icons-png.flaticon.com/512/2819/2819145.png" alt="Vegetarian"></div>
+                <a onclick="filterMenu('Plant Based', this)" class="quick-item magnetic disabled">
+                    <div class="quick-icon"><i data-lucide="leaf"></i></div>
                     <span class="quick-label">Plant Based</span>
                 </a>
                 <!-- Icon 5 -->
-                <a onclick="filterMenu('Confections', this)" class="quick-item magnetic">
-                    <div class="quick-icon"><img src="https://cdn-icons-png.flaticon.com/512/2660/2660057.png" alt="Desserts"></div>
+                <a onclick="filterMenu('Confections', this)" class="quick-item magnetic active disabled">
+                    <div class="quick-icon"><i data-lucide="cake"></i></div>
                     <span class="quick-label">Confections</span>
                 </a>
                  <!-- Icon 6 -->
-                 <a onclick="filterMenu('The Cellar', this)" class="quick-item magnetic">
-                    <div class="quick-icon"><img src="https://cdn-icons-png.flaticon.com/512/3212/3212133.png" alt="Wine"></div>
+                 <a onclick="filterMenu('The Cellar', this)" class="quick-item magnetic disabled">
+                    <div class="quick-icon"><i data-lucide="wine"></i></div>
                     <span class="quick-label">The Cellar</span>
                 </a>
             </div>
@@ -422,7 +433,7 @@
                 <div class="scroller gs-stagger-specials" style="padding: 20px 0; overflow-x: scroll; cursor: grab;">
                     
                     <div class="special-card card-emerald">
-                        <img class="special-img" src="https://images.unsplash.com/photo-1633945274405-b6c8069047b0?auto=format&fit=crop&q=100&w=1920" alt="Biryani">
+                        <img class="special-img" src="https://images.unsplash.com/photo-1633945274405-b6c8069047b0?auto=format&fit=crop&q=100&w=1200" alt="Biryani" draggable="false">
                         <div class="special-overlay">
                             <span class="special-price">&#8377;850</span>
                             <h3 class="special-title">Royal Awadhi Biryani</h3>
@@ -431,7 +442,7 @@
                     </div>
 
                     <div class="special-card card-ruby">
-                        <img class="special-img" src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&q=100&w=1920" alt="Butter Chicken">
+                        <img class="special-img" src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&q=100&w=1200" alt="Butter Chicken" draggable="false">
                         <div class="special-overlay">
                             <span class="special-price">&#8377;650</span>
                             <h3 class="special-title">Smoked Butter Chicken</h3>
@@ -440,7 +451,7 @@
                     </div>
 
                     <div class="special-card card-gold">
-                        <img class="special-img" src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&q=100&w=1920" alt="Paneer Tikka">
+                        <img class="special-img" src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&q=100&w=1200" alt="Paneer Tikka" draggable="false">
                         <div class="special-overlay">
                             <span class="special-price">&#8377;450</span>
                             <h3 class="special-title">Tandoori Paneer</h3>
@@ -449,7 +460,7 @@
                     </div>
                     
                     <div class="special-card card-sapphire">
-                        <img class="special-img" src="https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&q=100&w=1920" alt="Saffron Pista Lassi">
+                        <img class="special-img" src="https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&q=100&w=1200" alt="Saffron Pista Lassi" draggable="false">
                         <div class="special-overlay">
                             <span class="special-price">&#8377;250</span>
                             <h3 class="special-title">Saffron Pista Lassi</h3>
@@ -579,7 +590,7 @@
                 </div>
             </div>
             
-            <div class="contact-card gs-reveal-up" style="transition-delay: 0.2s; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 80px 40px;">
+            <div class="contact-card gs-reveal-up">
                 <h3 style="margin-bottom:20px; font-size: 3rem;">Ready to Dine?</h3>
                 <p style="color: var(--text-muted); margin-bottom: 40px; font-size: 1.1rem;">Skip the wait by securing your table at Celebrations through our new VIP Booking Portal.</p>
                 <a href="booking.html" class="btn-gold magnetic" style="padding: 20px 50px; font-size: 1.2rem;">Book Your Table <i data-lucide="arrow-right"></i></a>
@@ -593,8 +604,10 @@
 
         // Functional Menu Filtering
         function filterMenu(categoryName, element) {
+            // Check if item is disabled
+            if (element.classList.contains('disabled')) return;
+
             // Remove active style from all nav icons
-            document.querySelectorAll('.quick-item').forEach(el => el.classList.remove('active'));
             // Apply gold energetic active style to clicked icon
             element.classList.add('active');
             
@@ -623,10 +636,15 @@
             slider.addEventListener('mousemove', (e) => {
                 if (!isDown) return;
                 e.preventDefault();
+                if (Math.abs(e.pageX - slider.offsetLeft - startX) > 5) {
+                    slider.classList.add('dragging');
+                }
                 const x = e.pageX - slider.offsetLeft;
                 const walk = (x - startX) * 2; // Scroll speed
                 slider.scrollLeft = scrollLeft - walk;
             });
+            slider.addEventListener('mouseup', () => { isDown = false; slider.style.cursor = 'grab'; slider.classList.remove('dragging'); });
+            slider.addEventListener('mouseleave', () => { isDown = false; slider.style.cursor = 'grab'; slider.classList.remove('dragging'); });
         });
 
         // Custom Cursor Logic
@@ -685,7 +703,9 @@
 
         // Crucial: Recalculate ScrollTrigger thresholds after heavy Unsplash images fully load to prevent coordinate glitches
         window.addEventListener('load', () => {
-            ScrollTrigger.refresh();
+            setTimeout(() => {
+                ScrollTrigger.refresh();
+            }, 500); // 500ms delay to ensure all dynamic heights are settled after Lenis/Images init
         });
 
         // Header Scroll
@@ -716,9 +736,11 @@
         gsap.from('.gs-stagger-specials .special-card', {
             scrollTrigger: {
                 trigger: '.gs-trigger-specials',
-                start: 'top bottom', // Trigger as soon as it enters viewport to avoid invisible bug
+                start: 'top 95%', // Trigger slightly before it enters fully
+                toggleActions: "play none none none"
             },
-            x: 100, opacity: 0, duration: 0.8, stagger: 0.15, ease: 'power3.out'
+            x: 100, opacity: 0, duration: 0.8, stagger: 0.15, ease: 'power3.out',
+            clearProps: "opacity,transform" // Important: prevents invisible bugs if refreshed
         });
 
         // Portfolio Grid Stagger
@@ -727,7 +749,8 @@
                 trigger: '.portfolio-section',
                 start: 'top bottom',
             },
-            y: 50, opacity: 0, scale: 0.95, duration: 0.8, stagger: 0.2, ease: 'back.out(1.2)'
+            y: 50, opacity: 0, scale: 0.95, duration: 0.8, stagger: 0.2, ease: 'back.out(1.2)',
+            clearProps: "opacity,transform,scale"
         });
 
         // Gallery Parallax Columns
@@ -749,9 +772,11 @@
         gsap.from('.footer .gs-reveal-up', {
             scrollTrigger: {
                 trigger: '.footer',
-                start: 'top bottom' // Trigger instantly when footer enters viewport
+                start: 'top 95%', // Trigger as soon as it enters 5% of viewport
+                toggleActions: "play none none none"
             },
-            y: 50, opacity: 0, duration: 1, stagger: 0.2, ease: 'power3.out'
+            y: 50, opacity: 0, duration: 1, stagger: 0.1, ease: 'power3.out',
+            clearProps: "opacity,transform" // Clear ONLY what we animate to avoid breaking layouts
         });
 
     </script>
